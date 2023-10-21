@@ -1,4 +1,4 @@
--- Variáveis do jogador
+-- variáveis do jogador
 local player = {
     x = 200,
     y = 500,
@@ -10,7 +10,7 @@ local player = {
     imagem = nil,
 }
 
--- Variáveis dos inimigos
+-- variáveis dos inimigos
 local aliens = {
     balasaliens = {},
     velocidade = 200,
@@ -26,11 +26,11 @@ local largura_aliens = 40
 local altura_aliens = 20
 local defeatedaliens = 0
 
--- Geração de aliens
+-- geração de inimigos
 local spawnTimer = 0
 local spawnRate = 2
 
--- Função para criar inimigos
+-- função criadora de inimigos
 function spawnEnemy(x, y)
     local enemy = {
         x = x,
@@ -42,22 +42,22 @@ function spawnEnemy(x, y)
     table.insert(aliens, enemy)
 end
 
--- Carrega o jogo
+-- carrega o jogo
 function love.load()
     love.window.setTitle("Space Invaders")
     love.window.setMode(400, 600)
 
-    -- Carrega a fonte do contador
+    -- carrega a fonte do contador
     fonteContador = love.graphics.newFont(12)
 
-    -- Carrega o sprite do jogador
+    -- carrega o sprite do jogador
     player.imagem = love.graphics.newImage("ship.png")
 
-    -- Carrega o sprite dos aliens
+    -- carrega o sprite dos inimigos
     aliens.imagemalien = love.graphics.newImage("alien.png")
 end
 
--- Função para criar tiros dos aliens
+-- função para criar tiros dos aliens
 function alienshoot()
     for _, alien in ipairs(aliens) do
         local balaalien = {
@@ -71,18 +71,18 @@ function alienshoot()
     alienShootTimer = 0  -- Reinicialize o temporizador aqui
 end
 
--- Função para criar tiros do jogador
+-- função para criar tiros do jogador
 function shoot()
     local bala = {
         x = player.x + player.width / 1.2,
         y = player.y,
         velocidade = 300,
-        color = {0, 1, 0, 1}  -- Cor verde neon (RGBA)
+        color = {0, 1, 0, 1}  -- verde neon 
     }
     table.insert(player.balas, bala)
 end
 
--- Atualiza
+-- atualiza --------------------------------------------------------------------------------------------------------------
 function love.update(dt)
     -- Sistema de velocidade 
     local moveX, moveY = 0, 0
@@ -119,7 +119,7 @@ function love.update(dt)
         player.x = love.graphics.getWidth()
     end
 
-    -- Verifica se o jogador atingiu os limites da tela vertical
+    -- verifica se o jogador atingiu os limites da tela vertical
     if player.y < 0 then
         player.y = 0
     elseif player.y + player.height > love.graphics.getHeight() then
@@ -137,11 +137,11 @@ function love.update(dt)
     alienShootTimer = alienShootTimer + dt
 
     if alienShootTimer >= alienShootInterval then
-        -- Chamada da função para os aliens atirarem
+        -- chamada da função para os aliens atirarem
         alienshoot()
     end
 
-    -- Atualiza o movimento dos tiros do jogador
+    -- atualiza o movimento dos tiros do jogador
     for i, bala in ipairs(player.balas) do
         bala.y = bala.y - bala.velocidade * dt
         if bala.y < 0 then
@@ -149,7 +149,7 @@ function love.update(dt)
         end
     end
 
-    -- Atualiza o movimento dos tiros dos aliens
+    -- atualiza o movimento dos tiros dos aliens
     for i, alien in ipairs(aliens) do
         for j, balaalien in ipairs(alien.balasaliens) do
             balaalien.y = balaalien.y + balaalien.velocidade * dt  -- Mude de subtração para adição
@@ -159,7 +159,7 @@ function love.update(dt)
         end
     end
 
-    -- Sistema de colisão entre tiros e aliens
+    -- sistema de colisão entre tiros e aliens
     for i, bala in ipairs(player.balas) do
         for j, enemy in ipairs(aliens) do
             if bala.x > enemy.x and bala.x < enemy.x + largura_aliens and
@@ -171,7 +171,7 @@ function love.update(dt)
         end
     end
 
-    -- Gera aliens
+    -- gera inimigos
     spawnTimer = spawnTimer + dt
     if spawnTimer > spawnRate then
         spawnEnemy(math.random(0, love.graphics.getWidth() - largura_aliens), -altura_aliens)
@@ -179,24 +179,24 @@ function love.update(dt)
     end
 end
 
--- Gera o jogo
+-- desenha o jogo
 function love.draw()
     -- Gera o jogador
     love.graphics.draw(player.imagem, player.x, player.y)
 
-    -- Desenha os inimigos
+    -- desenha os inimigos
     for _, enemy in ipairs(aliens) do
         love.graphics.draw(aliens.imagemalien, enemy.x, enemy.y)
     end
 
-    -- Gera os tiros do jogador
+    -- gera os tiros do jogador
     for _, bala in ipairs(player.balas) do
         love.graphics.setColor(bala.color)  -- Define a cor do tiro
         love.graphics.rectangle("fill", bala.x, bala.y, 2, 5)
         love.graphics.setColor(1, 1, 1, 1)  -- Restaura a cor padrão (branco)
     end
 
-    -- Gera os tiros dos aliens
+    -- gera os tiros dos aliens
     for _, alien in ipairs(aliens) do
         for _, balaalien in ipairs(alien.balasaliens) do
             love.graphics.setColor(balaalien.color)  -- Define a cor do tiro
@@ -205,14 +205,14 @@ function love.draw()
         end
     end
 
-    -- Fonte do contador
+    -- fonte do contador
     love.graphics.setFont(fonteContador)
 
-    -- Gera o contador
+    -- gera o contador
     love.graphics.print("Derrotados: " .. defeatedaliens, 10, 10)
 end
 
--- Função para atirar
+-- função para atirar
 function love.keypressed(key)
     if key == "space" then
         shoot()
